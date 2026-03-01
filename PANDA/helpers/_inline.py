@@ -7,6 +7,7 @@ from pyrogram import types
 
 from PANDA import app, config, lang
 from PANDA.core.lang import lang_codes
+LOGGERS = "musicmyanmar_helpbot"
 
 
 class Inline:
