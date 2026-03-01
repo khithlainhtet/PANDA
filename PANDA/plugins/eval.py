@@ -2,7 +2,6 @@
 # Licensed under the MIT License.
 # This file is part of PANDA
 
-
 import io
 import os
 import re
@@ -14,17 +13,17 @@ from typing import Any, Optional, Tuple
 
 from pyrogram import filters, types
 
-from config import ERROR_FORMAT
 from PANDA import anon, app, config, db, lang, userbot
 from PANDA.helpers import format_exception, meval
 
 
-@app.on_message(filters.command(["eval", "exec"]) & filters.user([app.OWNER, int(ERROR_FORMAT)])
-@app.on_edited_message(filters.command(["eval", "exec"]) & filters.user([app.OWNER, int(ERROR_FORMAT)])
+@app.on_message(filters.command(["eval", "exec"]) & filters.user([config.OWNER_ID, config.ERROR_FORMAT]))
+@app.on_edited_message(filters.command(["eval", "exec"]) & filters.user([config.OWNER_ID, config.ERROR_FORMAT]))
 @lang.language()
 async def eval_handler(_, message: types.Message):
     if len(message.command) < 2:
-        return await message.reply_text(message.lang["eval_inp"])
+        
+        return await message.reply_text("ပေးထားတဲ့ code ကို run ဖို့ input လိုအပ်ပါတယ်ဗျာ။")
 
     code = message.text.split(None, 1)[1]
     out_buf = io.StringIO()
@@ -59,9 +58,11 @@ async def eval_handler(_, message: types.Message):
         }
 
         try:
+            
             result = await meval(code, globals(), **eval_vars)
             return "", result
         except Exception as e:
+            
             tb = traceback.extract_tb(e.__traceback__)
             snippet_tb = next(
                 (i for i, f in enumerate(tb) if f.filename == "<string>"), -1
@@ -69,7 +70,7 @@ async def eval_handler(_, message: types.Message):
             formatted_tb = format_exception(
                 e, tb[snippet_tb:] if snippet_tb != -1 else tb
             )
-            return message.lang["eval_error"], formatted_tb
+            return "Error အကျဉ်းချုပ်:", formatted_tb
 
     _, result = await _eval_code()
 
@@ -77,13 +78,16 @@ async def eval_handler(_, message: types.Message):
         print(result, file=out_buf)
 
     output = out_buf.getvalue().strip()
-    response = message.lang["eval_out"].format(escape(output))
-
-    if len(response) > 4096:
+    
+    
+    if len(output) > 4000:
         with io.BytesIO(output.encode()) as out_file:
-            out_file.name = f"{uuid.uuid4().hex[:8].lower()}.txt"
+            out_file.name = f"eval_{uuid.uuid4().hex[:5]}.txt"
             return await message.reply_document(
-                document=out_file, disable_notification=True
+                document=out_file, 
+                caption="Output အရမ်းရှည်လို့ File အနေနဲ့ ပို့ပေးလိုက်ပါတယ်ဗျာ။",
+                disable_notification=True
             )
 
-    await message.reply_text(response)
+    
+    await message.reply_text(f"**Output:**\n`{escape(output)}`" if output else "**Output:** `None`")
