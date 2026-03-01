@@ -1,11 +1,11 @@
-# Copyright (c) 2026 khithlainhtet
+# Copyright (c) 2025 TheHamkerAlone
 # Licensed under the MIT License.
-# This file is part of PANDA
+# This file is part of AloneX
+
 
 import time
 import logging
 from logging.handlers import RotatingFileHandler
-
 
 logging.basicConfig(
     format="[%(asctime)s - %(levelname)s] - %(name)s: %(message)s",
@@ -23,40 +23,42 @@ logging.getLogger("pyrogram").setLevel(logging.ERROR)
 logging.getLogger("pytgcalls").setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 
+
 __version__ = "3.0.1"
 
-# ၂။ Config နဲ့ Directory Setup
 from config import Config
+
 config = Config()
 config.check()
 tasks = []
 boot = time.time()
 
-from PANDA.core.dir import ensure_dirs
-ensure_dirs()
-
-from PANDA.core.mongo import MongoDB
-db = MongoDB()
-
-from PANDA.core.bot import Bot
+from AloneX.core.bot import Bot
 app = Bot()
 
-from PANDA.core.lang import Language
+from AloneX.core.dir import ensure_dirs
+ensure_dirs()
+
+from AloneX.core.userbot import Userbot
+userbot = Userbot()
+
+from AloneX.core.mongo import MongoDB
+db = MongoDB()
+
+from AloneX.core.lang import Language
 lang = Language()
 
-from PANDA.core.telegram import Telegram
-from PANDA.core.youtube import YouTube
+from AloneX.core.telegram import Telegram
+from AloneX.core.youtube import YouTube
 tg = Telegram()
 yt = YouTube()
 
-from PANDA.helpers import Queue
+from AloneX.helpers import Queue
 queue = Queue()
 
-from PANDA.core.calls import TgCall
+from AloneX.core.calls import TgCall
 anon = TgCall()
 
-from PANDA.core.userbot import Userbot
-userbot = Userbot()
 
 async def stop() -> None:
     logger.info("Stopping...")
@@ -69,10 +71,6 @@ async def stop() -> None:
 
     await app.exit()
     await userbot.exit()
-    
-    try:
-        await db.close()
-    except:
-        pass
+    await db.close()
 
     logger.info("Stopped.\n")
