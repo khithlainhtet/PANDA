@@ -6,7 +6,7 @@
 import time
 import logging
 from logging.handlers import RotatingFileHandler
-LOGGERS = "musicmyanmar_helpbot"
+
 
 logging.basicConfig(
     format="[%(asctime)s - %(levelname)s] - %(name)s: %(message)s",
