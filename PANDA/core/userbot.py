@@ -6,9 +6,9 @@ import asyncio
 from os import getenv
 from pyrogram import Client
 from PANDA import config, logger
-from PANDA.helpers._inline_ import LOGGERS
+from PANDA import config, LOGGERS
 
-# Environment variables
+
 BOT_TOKEN = getenv("BOT_TOKEN", "")
 MONGO_DB_URI = getenv("MONGO_DB_URI", "")
 STRING_SESSION = getenv("STRING_SESSION", "")
