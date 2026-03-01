@@ -2,7 +2,6 @@
 # Licensed under the MIT License.
 # This file is part of PANDA
 
-
 import time
 import logging
 from logging.handlers import RotatingFileHandler
@@ -24,27 +23,23 @@ logging.getLogger("pyrogram").setLevel(logging.ERROR)
 logging.getLogger("pytgcalls").setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 
-
 __version__ = "3.0.1"
 
+# ၂။ Config နဲ့ Directory Setup
 from config import Config
-
 config = Config()
 config.check()
 tasks = []
 boot = time.time()
 
-from PANDA.core.bot import Bot
-app = Bot()
-
 from PANDA.core.dir import ensure_dirs
 ensure_dirs()
 
-from PANDA.core.userbot import Userbot
-userbot = Userbot()
-
 from PANDA.core.mongo import MongoDB
 db = MongoDB()
+
+from PANDA.core.bot import Bot
+app = Bot()
 
 from PANDA.core.lang import Language
 lang = Language()
@@ -60,6 +55,8 @@ queue = Queue()
 from PANDA.core.calls import TgCall
 anon = TgCall()
 
+from PANDA.core.userbot import Userbot
+userbot = Userbot()
 
 async def stop() -> None:
     logger.info("Stopping...")
@@ -72,6 +69,10 @@ async def stop() -> None:
 
     await app.exit()
     await userbot.exit()
-    await db.close()
+    
+    try:
+        await db.close()
+    except:
+        pass
 
     logger.info("Stopped.\n")
